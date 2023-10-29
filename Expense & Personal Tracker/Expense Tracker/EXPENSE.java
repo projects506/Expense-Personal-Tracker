@@ -30,7 +30,7 @@ class ExpenseManager {
                     "id INT AUTO_INCREMENT PRIMARY KEY, " +
                     "category VARCHAR(255), " +
                     "amount DOUBLE, " +
-                    "date String )";
+                    "date varchar(12))";
             statement.execute(createTableSQL);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -68,6 +68,7 @@ class ExpenseManager {
             preparedStatement.setString(2, endDate);
             
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                double sum=0;
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id");
                     String category = resultSet.getString("category");
@@ -76,12 +77,15 @@ class ExpenseManager {
                     String dateStr = new SimpleDateFormat("yyyy-MM-dd").format(date);
     
                     System.out.println("ID: " + id + " Date & Time: " + dateStr + " Category: " + category + ", Amount: " + amount);
+                    sum+=amount;
                 }
+                System.out.println("Sum of expenses: "+ sum);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+    public 
 
     public void viewExpenses(String categoryInput) {
         String selectSQL = "SELECT id, date, category, amount FROM expenses WHERE category=?";
@@ -91,15 +95,17 @@ class ExpenseManager {
             
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 System.out.println("Expenses for Category: " + categoryInput);
+                double sum=0;
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id");
                     String category = resultSet.getString("category");
                     double amount = resultSet.getDouble("amount");
                     Date date = resultSet.getTimestamp("date");
                     String dateStr = new SimpleDateFormat("yyyy-MM-dd ").format(date);
-    
                     System.out.println("ID: " + id + " Date & Time: " + dateStr + " Category: " + category + ", Amount: " + amount);
+                    sum+=amount;
                 }
+                System.out.println("Sum of expenses: "+ sum);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -111,15 +117,17 @@ class ExpenseManager {
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(selectSQL)) {
             System.out.println("Expenses:");
+            double sum=0;
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String category = resultSet.getString("category");
                 double amount = resultSet.getDouble("amount");
                 Date date = resultSet.getTimestamp("date");
                 String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-
                 System.out.println("ID: " + id + " Date & Time: " + dateStr + " Category: " + category + ", Amount: " + amount);
+                sum+=amount;
             }
+            System.out.println("Sum of expenses: "+ sum);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -149,7 +157,9 @@ class PersonalAssistant {
             System.out.println("Personal Assistant Menu:");
             System.out.println("1. Add Expense");
             System.out.println("2. View Expenses");
-            System.out.println("3. Quit");
+            System.out.println("3. Update");
+            System.out.println("4. Quit");
+            System.out.println("5. Quit");
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
 
