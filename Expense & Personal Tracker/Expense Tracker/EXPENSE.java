@@ -9,9 +9,17 @@ import java.util.Date;
 import java.util.Scanner;
 
 class ExpenseManager {
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/expenses";
-    private static final String USER = "root";
-    private static final String PASSWORD = "1004";
+    private static  String JDBC_URL = null;
+    private static  String USER = null;
+    private static  String PASSWORD = null;
+
+    ExpenseManager(String databaseName, String USER, String PASSWORD) {
+
+        String JDBC_URL = "jdbc:mysql://localhost:3306/" + databaseName;
+        this.JDBC_URL=JDBC_URL;
+        this.USER = USER;
+        this.PASSWORD = PASSWORD;
+    }
 
     private Connection connection;
 
@@ -38,74 +46,74 @@ class ExpenseManager {
     }
 
     public void addExpense(String category, double amount) {
-    String insertSQL = "INSERT INTO expenses (category, amount, date) VALUES (?, ?, ?)";
-    
-    try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
-        preparedStatement.setString(1, category);
-        preparedStatement.setDouble(2, amount);
-        java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String currentDateStr = dateFormat.format(currentDate);
-        preparedStatement.setString(3, currentDateStr);
-        
-        int rowsAffected = preparedStatement.executeUpdate();
-        if (rowsAffected > 0) {
-            System.out.println("Expense added.");
-        } else {
-            System.out.println("Failed to add the expense.");
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
+        String insertSQL = "INSERT INTO expenses (category, amount, date) VALUES (?, ?, ?)";
 
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+            preparedStatement.setString(1, category);
+            preparedStatement.setDouble(2, amount);
+            java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String currentDateStr = dateFormat.format(currentDate);
+            preparedStatement.setString(3, currentDateStr);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Expense added.");
+            } else {
+                System.out.println("Failed to add the expense.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void viewExpenses(String startDate, String endDate) {
         String selectSQL = "SELECT id, date, category, amount FROM expenses WHERE date BETWEEN ? AND ?";
-        
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             preparedStatement.setString(1, startDate);
             preparedStatement.setString(2, endDate);
-            
+
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                double sum=0;
+                double sum = 0;
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id");
                     String category = resultSet.getString("category");
                     double amount = resultSet.getDouble("amount");
                     Date date = resultSet.getTimestamp("date");
                     String dateStr = new SimpleDateFormat("yyyy-MM-dd").format(date);
-    
-                    System.out.println("ID: " + id + " Date & Time: " + dateStr + " Category: " + category + ", Amount: " + amount);
-                    sum+=amount;
+
+                    System.out.println("ID: " + id + " Date & Time: " + dateStr + " Category: " + category
+                            + ", Amount: " + amount);
+                    sum += amount;
                 }
-                System.out.println("Sum of expenses: "+ sum);
+                System.out.println("Sum of expenses: " + sum);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public 
 
     public void viewExpenses(String categoryInput) {
         String selectSQL = "SELECT id, date, category, amount FROM expenses WHERE category=?";
-        
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             preparedStatement.setString(1, categoryInput);
-            
+
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 System.out.println("Expenses for Category: " + categoryInput);
-                double sum=0;
+                double sum = 0;
                 while (resultSet.next()) {
                     int id = resultSet.getInt("id");
                     String category = resultSet.getString("category");
                     double amount = resultSet.getDouble("amount");
                     Date date = resultSet.getTimestamp("date");
                     String dateStr = new SimpleDateFormat("yyyy-MM-dd ").format(date);
-                    System.out.println("ID: " + id + " Date & Time: " + dateStr + " Category: " + category + ", Amount: " + amount);
-                    sum+=amount;
+                    System.out.println("ID: " + id + " Date & Time: " + dateStr + " Category: " + category
+                            + ", Amount: " + amount);
+                    sum += amount;
                 }
-                System.out.println("Sum of expenses: "+ sum);
+                System.out.println("Sum of expenses: " + sum);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -115,19 +123,20 @@ class ExpenseManager {
     public void viewExpenses() {
         String selectSQL = "SELECT id, date, category, amount FROM expenses";
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(selectSQL)) {
+                ResultSet resultSet = statement.executeQuery(selectSQL)) {
             System.out.println("Expenses:");
-            double sum=0;
+            double sum = 0;
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String category = resultSet.getString("category");
                 double amount = resultSet.getDouble("amount");
                 Date date = resultSet.getTimestamp("date");
                 String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-                System.out.println("ID: " + id + " Date & Time: " + dateStr + " Category: " + category + ", Amount: " + amount);
-                sum+=amount;
+                System.out.println(
+                        "ID: " + id + " Date & Time: " + dateStr + " Category: " + category + ", Amount: " + amount);
+                sum += amount;
             }
-            System.out.println("Sum of expenses: "+ sum);
+            System.out.println("Sum of expenses: " + sum);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -144,6 +153,14 @@ class ExpenseManager {
 
 class PersonalAssistant {
     public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter Database Name: ");
+        String databaseName = sc.nextLine();
+        System.out.println("Enter user Name: ");
+        String USER = sc.nextLine();
+        System.out.println("Enter Password: ");
+        String PASSWORD = sc.nextLine();
+        ExpenseManager expenseManager1 = new ExpenseManager(databaseName, USER, PASSWORD);
         ExpenseManager expenseManager = new ExpenseManager();
         runPersonalAssistant(expenseManager);
         expenseManager.closeConnection();
@@ -191,7 +208,7 @@ class PersonalAssistant {
                                 String endDate = scanner.next();
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                                 try {
-                                    
+
                                     expenseManager.viewExpenses(startDate, endDate);
                                 } catch (Exception ex) {
                                     System.out.println("Invalid date format. Please use yyyy-MM-dd ");
