@@ -124,7 +124,6 @@ class ExpenseManager {
         String selectSQL = "SELECT id, date, category, amount FROM expenses";
         try (Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(selectSQL)) {
-            System.out.println("Expenses:");
             double sum = 0;
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
@@ -141,6 +140,23 @@ class ExpenseManager {
             e.printStackTrace();
         }
     }
+    public void updateExpenses(int amount, int id) {
+        String updateSQL = "Update expenses Set amount=? where id=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
+            preparedStatement.setInt(1, amount);
+            preparedStatement.setInt(2,id);
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Expense updated.");
+            } else {
+                System.out.println("Failed to update the expense.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+    }
+
 
     public void closeConnection() {
         try {
@@ -230,6 +246,15 @@ class PersonalAssistant {
                     }
                     break;
                 case 3:
+                    System.out.println("Enter id");
+                    int id=scanner.nextInt();
+                    System.out.println("Enter Amount");
+                    int amountUpdate=scanner.nextInt();
+                    expenseManager.updateExpenses(amountUpdate, id);
+                    break;
+
+
+                case 5:
                     running = false;
                     System.out.println("Exiting Personal Assistant.");
                     break;
