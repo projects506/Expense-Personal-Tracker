@@ -3,7 +3,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class EventTracker {
-    private static final String DB_URL = "dbc:mysql://localhost:3306/?user=root";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/?user=root";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "robby1cherry";
 
