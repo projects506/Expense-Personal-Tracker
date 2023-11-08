@@ -3,13 +3,15 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class EventTracker {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/?user=root";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/events";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "robby1cherry";
+    private static final String PASSWORD = "1234567890";
 
     public static void main(String[] args) {
         try {
-            Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+            Connection connection;
+            connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+            Class.forName("com.mysql.cj.jdbs.Driver");
             createTable(connection);
 
             Scanner scanner = new Scanner(System.in);
@@ -50,7 +52,7 @@ public class EventTracker {
             System.out.println("Program closed.");
             scanner.close();
             connection.close();
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
