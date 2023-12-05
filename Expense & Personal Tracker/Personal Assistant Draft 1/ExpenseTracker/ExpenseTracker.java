@@ -1,4 +1,7 @@
 package ExpenseTracker;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,7 +15,7 @@ public class ExpenseTracker {
     public  static String JDBC_URL = null;
     public  static String USER = null;
     public  static String PASSWORD = null;
-
+    FileWriter fileWriter =null;
     public ExpenseTracker(String USER, String PASSWORD) {
 
         JDBC_URL = "jdbc:mysql://localhost:3306/personal";
@@ -61,7 +64,7 @@ public class ExpenseTracker {
         }
     }
 
-    public void viewExpenses(String startDate, String endDate) {
+    public void viewExpenses(String startDate, String endDate, boolean print) {
         String selectSQL = "SELECT id, date, category, amount FROM expenses WHERE date BETWEEN ? AND ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
@@ -71,25 +74,49 @@ public class ExpenseTracker {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 double sum = 0;
                 while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    String category = resultSet.getString("category");
-                    double amount = resultSet.getDouble("amount");
-                    Date date = resultSet.getTimestamp("date");
-                    String dateStr = new SimpleDateFormat("yyyy-MM-dd").format(date);
-
-                    System.out.println("ID: " + id + " Date & Time: " + dateStr + " Category: " + category
-                            + ", Amount: " + amount);
-                    sum += amount;
+                int id = resultSet.getInt("id");
+                String category = resultSet.getString("category");
+                double amount = resultSet.getDouble("amount");
+                Date date = resultSet.getTimestamp("date");
+                String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+                String fString="ID: " + id + " Date & Time: " + dateStr + " Category: " + category + ", Amount: " + amount+'\n';
+                System.out.println(fString);
+                 sum += amount;
+                if(print==true){
+                    try{
+                    File fileEX = new File("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Expenses Record.txt");
+                     if (!fileEX.exists()) {
+                    fileEX.createNewFile();         
+                    }
+                    fileWriter = new FileWriter("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Expenses Record.txt", true);                
+                    fileWriter.write(fString);
+                    
+                    System.out.println("file saved successfully");}
+                    catch(IOException e){
+                    System.out.println(e);
+                    
+                 };
                 }
                 System.out.println("Sum of expenses: " + sum);
+                try{
+                fileWriter.close();
+                }
+                catch(IOException e){
+                    System.out.println(e);
+                }
+               
             }
-        } catch (SQLException e) {
+        } 
+                
+       
+    }
+     catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+} 
 
-    public void viewExpenses(String categoryInput) {
-        String selectSQL = "SELECT id, date, category, amount FROM expenses WHEFRE category=?";
+    public void viewExpenses(String categoryInput, boolean print) {
+        String selectSQL = "SELECT id, date, category, amount FROM expenses WHERE category=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
             preparedStatement.setString(1, categoryInput);
@@ -98,23 +125,45 @@ public class ExpenseTracker {
                 System.out.println("Expenses for Category: " + categoryInput);
                 double sum = 0;
                 while (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    String category = resultSet.getString("category");
-                    double amount = resultSet.getDouble("amount");
-                    Date date = resultSet.getTimestamp("date");
-                    String dateStr = new SimpleDateFormat("yyyy-MM-dd ").format(date);
-                    System.out.println("ID: " + id + " Date & Time: " + dateStr + " Category: " + category
-                            + ", Amount: " + amount);
-                    sum += amount;
+                int id = resultSet.getInt("id");
+                String category = resultSet.getString("category");
+                double amount = resultSet.getDouble("amount");
+                Date date = resultSet.getTimestamp("date");
+                String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+                String fString="ID: " + id + " Date & Time: " + dateStr + " Category: " + category + ", Amount: " + amount+'\n';
+                System.out.println(fString);
+                sum += amount;
+                if(print==true){
+                    try{
+                    File fileEX = new File("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Expenses Record.txt");
+                     if (!fileEX.exists()) {
+                    fileEX.createNewFile();         
+                    }
+                    fileWriter = new FileWriter("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Expenses Record.txt", true);                
+                    fileWriter.write(fString);
+                    
+                    System.out.println("file saved successfully");}
+                    catch(IOException e){
+                    System.out.println(e);
+                    
+                 };
                 }
                 System.out.println("Sum of expenses: " + sum);
+                try{
+                fileWriter.close();
+                }
+                catch(IOException e){
+                    System.out.println(e);
+                }
+                
             }
-        } catch (SQLException e) {
+        } 
+    }
+    catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
-    public void viewExpenses() {
+    public void viewExpenses(boolean print) {
         String selectSQL = "SELECT id, date, category, amount FROM expenses";
         try (Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(selectSQL)) {
@@ -125,8 +174,29 @@ public class ExpenseTracker {
                 double amount = resultSet.getDouble("amount");
                 Date date = resultSet.getTimestamp("date");
                 String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
-                System.out.println(
-                        "ID: " + id + " Date & Time: " + dateStr + " Category: " + category + ", Amount: " + amount);
+                String fString="ID: " + id + " Date & Time: " + dateStr + " Category: " + category + ", Amount: " + amount+'\n';
+                System.out.println(fString);
+                if(print==true){
+                    try{
+                    File fileEX = new File("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Expenses Record.txt");
+                     if (!fileEX.exists()) {
+                    fileEX.createNewFile();         
+                    }
+                    fileWriter = new FileWriter("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Expenses Record.txt", true);                
+                    fileWriter.write(fString);
+                    
+                    System.out.println("file saved successfully");}
+                    catch(IOException e){
+                    System.out.println(e);
+                    
+                 };
+                }
+                try{
+                fileWriter.close();
+                }
+                catch(IOException e){
+                    System.out.println(e);
+                }
                 sum += amount;
             }
             System.out.println("Sum of expenses: " + sum);
@@ -247,7 +317,7 @@ public class ExpenseTracker {
         System.out.println("Records Not deleted");        
     }
     }
-    
+  
     public void closeConnection() {
         try {
             connection.close();
@@ -255,4 +325,5 @@ public class ExpenseTracker {
             e.printStackTrace();
         }
     }
+      
 }

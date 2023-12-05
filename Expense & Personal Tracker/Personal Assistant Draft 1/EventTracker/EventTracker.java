@@ -1,4 +1,7 @@
 package EventTracker;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,11 +10,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 
+
 public class EventTracker {
     public  static String JDBC_URL = null;
     public  static String USER = null;
     public  static String PASSWORD = null;
     public Connection connection;
+    FileWriter fileWriter =null;
+
     public EventTracker( String USER, String PASSWORD) {
 
         JDBC_URL = "jdbc:mysql://localhost:3306/personal";
@@ -95,24 +101,95 @@ public class EventTracker {
     }
     }
 
-    public void viewEvents(){
+    public void viewEvents(boolean print){
         
         String selectQuery = "SELECT * FROM events";
-        try(Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(selectQuery)){
+        
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
 
-        if (!resultSet.isBeforeFirst()) {
-            System.out.println("No events to display.");
-        } else {
-            System.out.println("Events:");
-            while (resultSet.next()) {
-                System.out.println("Date: " + resultSet.getString("date") +
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                String fString=" Date: " + resultSet.getString("date") +
                         ", Event: " + resultSet.getString("event") +
-                        ", Description: " + resultSet.getString("description"));
+                        ", Description: " + resultSet.getString("description \n");
+                System.out.println(fString);
+                if(print==true){
+                    try{
+                    File fileET = new File("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Event Record.txt");
+                     if (!fileET.exists()) {
+                    fileET.createNewFile();         
+                    }
+                    fileWriter = new FileWriter("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Event Record.txt", true);                
+                    fileWriter.write(fString);
+                    
+                    System.out.println("file saved successfully");}
+                    catch(IOException e){
+                    System.out.println(e);
+                    
+                 };
+                }
+
+                try{
+                fileWriter.close();
+                }
+                catch(IOException e){
+                    System.out.println(e);
+                }
+               
             }
+        } 
+                
+       
+    }
+     catch (SQLException e) {
+            e.printStackTrace();
         }
-    }catch(SQLException e){e.printStackTrace();}
 }
+public void viewEvents(String startDate, String endDate, boolean print) {
+        String selectQuery = "SELECT id, date, category, amount FROM events WHERE date BETWEEN ? AND ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+            preparedStatement.setString(1, startDate);
+            preparedStatement.setString(2, endDate);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                String fString=" Date: " + resultSet.getString("date") +
+                        ", Event: " + resultSet.getString("event") +
+                        ", Description: " + resultSet.getString("description \n");
+                System.out.println(fString);
+                if(print==true){
+                    try{
+                    File fileET = new File("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Event Record.txt");
+                     if (!fileET.exists()) {
+                    fileET.createNewFile();         
+                    }
+                    fileWriter = new FileWriter("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Event Record.txt", true);                
+                    fileWriter.write(fString);
+                    
+                    System.out.println("file saved successfully");}
+                    catch(IOException e){
+                    System.out.println(e);
+                    
+                 };
+                }
+
+                try{
+                fileWriter.close();
+                }
+                catch(IOException e){
+                    System.out.println(e);
+                }
+               
+            }
+        } 
+                
+       
+    }
+     catch (SQLException e) {
+            e.printStackTrace();
+        }
+} 
     public void closeConnection() {
         try {
             connection.close();

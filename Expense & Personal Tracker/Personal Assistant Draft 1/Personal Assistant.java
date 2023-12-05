@@ -3,29 +3,32 @@ import SQLLogin.*;
 import ExpenseTracker.*;
 import EventTracker.*;
 import java.util.Scanner;
+import java.io.File;
 
 class PersonalAssistant1{
     public static void main(String[] args){
      Scanner sc = new Scanner(System.in);
      int tries=5;
      boolean PARun=true;
+    File fileEX = new File("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Expenses Record.txt");
+    fileEX.delete();
+    File fileET = new File("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Event Record.txt");
+    fileET.delete();
      while(PARun){
             System.out.println("Welcome to Your Personal Assistant");
              System.out.println("----x----x----x----x----x----x---");
             System.out.println("A Group Project By Group-7 \nNishant-220313\nAryyan Ahlawat-220338\nRaghav Arora-220370\nViresh Chauhan-220422" );
             System.out.println("----x----x----x----x-");
             System.out.println("Please Login to continue forward");
-            
             System.out.println("Enter Username: ");
             String USER = sc.nextLine();
             System.out.println("Enter Password: ");
             String PASSWORD = sc.nextLine();
             SQLLogin sql=new SQLLogin(USER, PASSWORD);
             if(sql.login==true){
-                System.out.println(sql.login);
                 System.out.println("Login Successfull.");
                 System.out.println("What Can I help you with?");
-                System.out.println("1. Manage Expenses \n2. Manage Calendar \n3.View Your Clocks \n4.Quit");
+                System.out.println("1. Manage Expenses \n2. Manage Calendar \n3.Quit");
                 System.out.print("Enter your choice: ");
                 int PAchoice = sc.nextInt();
                 switch(PAchoice){
@@ -53,6 +56,7 @@ class PersonalAssistant1{
                                             break;
 
                                         case 2:
+                                            
                                             boolean runningView = true;
                                             while (runningView) {
                                                 System.out.println("1. View All");
@@ -62,16 +66,23 @@ class PersonalAssistant1{
                                                 int choiceView = sc.nextInt();
                                                 switch (choiceView) {
                                                     case 1:
-                                                        ETM.viewExpenses();
+                                                        System.out.println("Do you Wish to print?(true of fale)");
+                                                        boolean print=sc.nextBoolean();
+
+                                                        ETM.viewExpenses(print);
+                                                        
+                                                       
                                                         break;
                                                     case 2:
                                                         System.out.print("Enter start date (yyyy-MM-dd ): ");
                                                         String startDate = sc.next();
                                                         System.out.print("Enter end date (yyyy-MM-dd): ");
-                                                        String endDate = sc.next();                                                
+                                                        String endDate = sc.next();  
+                                                        System.out.println("Do you Wish to print?(true of fale)");
+                                                        print=sc.nextBoolean();                                              
                                                         try {
 
-                                                            ETM.viewExpenses(startDate, endDate);
+                                                            ETM.viewExpenses(startDate, endDate,print);
                                                         } catch (Exception ex) {
                                                             System.out.println("Invalid date format. Please use yyyy-MM-dd ");
                                                         }
@@ -79,11 +90,16 @@ class PersonalAssistant1{
                                                     case 3:
                                                         System.out.print("Enter category: ");
                                                         String categoryInput = sc.next();
-                                                        ETM.viewExpenses(categoryInput);
+                                                        System.out.println("Do you Wish to print?(true of fale)");
+                                                        print=sc.nextBoolean();
+                                                        ETM.viewExpenses(categoryInput,print);
                                                         break;
                                                     case 4:
                                                         System.out.println("Going back to the previous menu.");
                                                         runningView = false;
+                                                    
+                                                     
+                                                        
                                                         break;
                                                     default:
                                                         System.out.println("Invalid choice. Please try again.");
@@ -224,7 +240,9 @@ class PersonalAssistant1{
                                             ET.updateEvent(eventToUpdate, updatedEvent, updatedDescription);
                                             break;
                                         case 4:
-                                            ET.viewEvents();
+                                            System.out.println("Do you Wish to print?(true of fale)");
+                                            boolean print=sc.nextBoolean();
+                                            ET.viewEvents(print);
                                             break;
                                         case 5:
                                             System.out.println("Program closed.");
@@ -243,7 +261,7 @@ class PersonalAssistant1{
                         
                         
                         
-                        case 4:
+                        case 3:
                             System.out.println("Exiting the Program.");
                             sc.close();
                             PARun=false;
