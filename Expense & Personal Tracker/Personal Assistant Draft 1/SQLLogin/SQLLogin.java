@@ -17,6 +17,7 @@ public SQLLogin( String USER, String PASSWORD) {
     } catch (Exception e) {
         
        login=false;
+       System.out.println(e);
     }
 }
 
