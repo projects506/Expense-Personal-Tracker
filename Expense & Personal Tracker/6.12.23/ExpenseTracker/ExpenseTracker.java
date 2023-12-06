@@ -97,6 +97,7 @@ public class ExpenseTracker extends SQLLogin implements SQLQueries {
                                     "C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Expenses Record.txt",
                                     true);
                             fileWriter.write(fString);
+                            fileWriter.close();
 
                             System.out.println("file saved successfully");
                         } catch (IOException e) {
@@ -108,13 +109,6 @@ public class ExpenseTracker extends SQLLogin implements SQLQueries {
 
                 }
                 System.out.println("Sum of expenses: " + sum);
-                if (fileWriter != null) {
-                    try {
-                        fileWriter.close();
-                    } catch (IOException e) {
-                        System.out.println(e);
-                    }
-                }
             }
 
         } catch (SQLException e) {
@@ -152,6 +146,7 @@ public class ExpenseTracker extends SQLLogin implements SQLQueries {
                                     "C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Expenses Record.txt",
                                     true);
                             fileWriter.write(fString);
+                            fileWriter.close();
 
                             System.out.println("file saved successfully");
                         } catch (IOException e) {
@@ -163,13 +158,7 @@ public class ExpenseTracker extends SQLLogin implements SQLQueries {
 
                 }
                 System.out.println("Sum of expenses: " + sum);
-                if (fileWriter != null) {
-                    try {
-                        fileWriter.close();
-                    } catch (IOException e) {
-                        System.out.println(e);
-                    }
-                }
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -198,9 +187,10 @@ public class ExpenseTracker extends SQLLogin implements SQLQueries {
                             fileEX.createNewFile();
                         }
                         fileWriter = new FileWriter(
-                                "C://Users//vchau//Documents//GitHub//Expense-Personal-Tracker//Expense & Personal Tracker//6.12.23//Output//Expenses Record.txt",true);
+                                "C://Users//vchau//Documents//GitHub//Expense-Personal-Tracker//Expense & Personal Tracker//6.12.23//Output//Expenses Record.txt",
+                                true);
                         fileWriter.write(fString);
-
+                        fileWriter.close();
                         System.out.println("file saved successfully");
                     } catch (IOException e) {
                         System.out.println(e);
@@ -212,12 +202,6 @@ public class ExpenseTracker extends SQLLogin implements SQLQueries {
                 sum += amount;
             }
             System.out.println("Sum of expenses: " + sum);
-            try {
-                fileWriter.close();
-            } catch (IOException e) {
-
-                System.out.println(e);
-            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -350,6 +334,13 @@ public class ExpenseTracker extends SQLLogin implements SQLQueries {
     }
 
     public void closeConnection() {
+        try {
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.out.println("File Writter is Null can not close");
+        }
         try {
             connection.close();
         } catch (SQLException e) {

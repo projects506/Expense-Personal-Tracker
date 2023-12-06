@@ -115,7 +115,7 @@ public class EventTracker extends SQLLogin implements SQLQueries {
                 while (resultSet.next()) {
                     String fString = " Date: " + resultSet.getString("date") +
                             ", Event: " + resultSet.getString("event") +
-                            ", Description: " + resultSet.getString("description" +"\n");
+                            ", Description: " + resultSet.getString("description");
                     System.out.println(fString);
                     if (print == true) {
                         try {
@@ -127,7 +127,7 @@ public class EventTracker extends SQLLogin implements SQLQueries {
                             fileWriter = new FileWriter(
                                     "C://Users//vchau//Documents//GitHub//Expense-Personal-Tracker//Expense & Personal Tracker//6.12.23//Output//Events Record.txt",
                                     true);
-                            fileWriter.write(fString);
+                            fileWriter.write(fString + '\n');
                             fileWriter.close();
 
                             System.out.println("file saved successfully");
@@ -138,7 +138,7 @@ public class EventTracker extends SQLLogin implements SQLQueries {
                     }
 
                 }
-                
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -147,55 +147,18 @@ public class EventTracker extends SQLLogin implements SQLQueries {
         }
     }
 
-    public void viewSQL(String startDate, String endDate, boolean print) {
-        String selectQuery = "SELECT id, date, category, amount FROM events WHERE date BETWEEN ? AND ?";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
-            preparedStatement.setString(1, startDate);
-            preparedStatement.setString(2, endDate);
-
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    String fString = " Date: " + resultSet.getString("date") +
-                            ", Event: " + resultSet.getString("event") +
-                            ", Description " + resultSet.getString("description");
-                    System.out.println(fString);
-                    if (print == true) {
-                        try {
-                            File fileET = new File(
-                                    "C://Users//vchau//Documents//GitHub//Expense-Personal-Tracker//Expense & Personal Tracker//6.12.23//Output//Events Record.txt");
-                            if (!fileET.exists()) {
-                                fileET.createNewFile();
-                            }
-                            fileWriter = new FileWriter(
-                                    "C://Users//vchau//Documents//GitHub//Expense-Personal-Tracker//Expense & Personal Tracker//6.12.23//Output//Events Record.txt",
-                                    true);
-                            fileWriter.write(fString);
-                            filewriter.close();
-
-                            System.out.println("file saved successfully");
-                        } catch (IOException e) {
-                            System.out.println(e);
-
-                        }
-                        ;
-                    }
-
-                  
-
-                }
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void closeWriter() {
 
     }
 
     public void closeConnection() {
+        try {
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            System.out.println("File Writter is Null can not close");
+        }
         try {
             connection.close();
         } catch (SQLException e) {
