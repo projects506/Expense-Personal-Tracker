@@ -3,16 +3,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import SQLLogin.*;
+import SQLQueries.*;
 
 
 
-public class EventTracker extends SQLLogin{
+public class EventTracker extends SQLLogin implements SQLQueries{
 
     public Connection connection;
     FileWriter fileWriter =null;
@@ -38,7 +38,8 @@ public class EventTracker extends SQLLogin{
         System.out.println("Error: " +e);
     }
     }
-    public void addEvent(String date, String event, String description) {
+    public void insertSQL(){};
+    public void insertSQL(String date, String event, String description) {
               
         String addEventQuery = "INSERT INTO events (date, event, description) VALUES (?, ?, ?)";
         try(PreparedStatement preparedStatement = connection.prepareStatement(addEventQuery)){
@@ -58,7 +59,8 @@ public class EventTracker extends SQLLogin{
         e.printStackTrace();
     }
     }
-   public void removeEvent(String eventToRemove) {
+    public void deleteSQL(){};
+   public void deleteSQL(String eventToRemove) {
         
 
         String removeEventQuery = "DELETE FROM events WHERE event = ?";
@@ -76,8 +78,8 @@ public class EventTracker extends SQLLogin{
         e.printStackTrace();
     }
     }
-
-    public void updateEvent(String eventToUpdate, String updatedEvent, String updatedDescription) {
+    public void updateSQL(){};
+    public void updateSQL(String eventToUpdate, String updatedEvent, String updatedDescription) {
         
 
         String updateEventQuery = "UPDATE events SET event = ?, description = ? WHERE event = ?";
@@ -97,8 +99,8 @@ public class EventTracker extends SQLLogin{
         e.printStackTrace();
     }
     }
-
-    public void viewEvents(boolean print){
+    public void viewSQL(){};
+    public void viewSQL(boolean print){
         
         String selectQuery = "SELECT * FROM events";
         
@@ -142,7 +144,7 @@ public class EventTracker extends SQLLogin{
             e.printStackTrace();
         }
 }
-public void viewEvents(String startDate, String endDate, boolean print) {
+public void viewSQL(String startDate, String endDate, boolean print) {
         String selectQuery = "SELECT id, date, category, amount FROM events WHERE date BETWEEN ? AND ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {

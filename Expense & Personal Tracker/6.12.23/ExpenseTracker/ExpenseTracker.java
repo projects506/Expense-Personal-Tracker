@@ -10,8 +10,9 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import SQLLogin.*;
+import SQLQueries.*;
 
-public class ExpenseTracker extends SQLLogin {
+public class ExpenseTracker extends SQLLogin implements SQLQueries {
     FileWriter fileWriter =null;
     public ExpenseTracker() {
 
@@ -21,7 +22,7 @@ public class ExpenseTracker extends SQLLogin {
     }
 
     public Connection connection;
-
+    @Override
     public void initializeDatabase() {
         try (Statement statement = connection.createStatement()) {
             String createTableSQL = "CREATE TABLE IF NOT EXISTS expenses (" +
@@ -34,8 +35,8 @@ public class ExpenseTracker extends SQLLogin {
             e.printStackTrace();
         }
     }
-
-    public void addExpense(String category, double amount) {
+    public void insertSQL(){};
+    public void insertSQL(String category, double amount) {
         String insertSQL = "INSERT INTO expenses (category, amount, date) VALUES (?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
@@ -56,8 +57,8 @@ public class ExpenseTracker extends SQLLogin {
             e.printStackTrace();
         }
     }
-
-    public void viewExpenses(String startDate, String endDate, boolean print) {
+    public void viewSQL(){};
+    public void viewSQL(String startDate, String endDate, boolean print) {
         String selectSQL = "SELECT id, date, category, amount FROM expenses WHERE date BETWEEN ? AND ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
@@ -94,7 +95,7 @@ public class ExpenseTracker extends SQLLogin {
                
             }
             System.out.println("Sum of expenses: " + sum);
-                if(print=false){
+                if(fileWriter!=null){
                 try{
                 fileWriter.close();
                 }
@@ -111,7 +112,7 @@ public class ExpenseTracker extends SQLLogin {
         }
 } 
 
-    public void viewExpenses(String categoryInput, boolean print) {
+    public void viewSQL(String categoryInput, boolean print) {
         String selectSQL = "SELECT id, date, category, amount FROM expenses WHERE category=?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
@@ -148,7 +149,7 @@ public class ExpenseTracker extends SQLLogin {
                 
             }
             System.out.println("Sum of expenses: " + sum);
-            if(print=false){
+                if(fileWriter!=null){
                 try{
                 fileWriter.close();
                 }
@@ -162,7 +163,7 @@ public class ExpenseTracker extends SQLLogin {
             e.printStackTrace();
         }
     }
-    public void viewExpenses(boolean print) {
+    public void viewSQL(boolean print) {
         String selectSQL = "SELECT id, date, category, amount FROM expenses";
         try (Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(selectSQL)) {
@@ -192,21 +193,21 @@ public class ExpenseTracker extends SQLLogin {
                 }
                 
                 sum += amount;
-            }
-            if(print=false){
+            }System.out.println("Sum of expenses: " + sum);
                 try{
                 fileWriter.close();
                 }
                 catch(IOException e){
+                    
                     System.out.println(e);
                 }
-            }
-            System.out.println("Sum of expenses: " + sum);
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-    public void updateExpenses(int amount, int id) {
+    public void updateSQL(){};
+    public void updateSQL(int amount, int id) {
         String updateSQL = "Update expenses Set amount=? where id=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
             preparedStatement.setInt(1, amount);
@@ -222,7 +223,7 @@ public class ExpenseTracker extends SQLLogin {
         }
         
     }
-    public void updateExpenses(String category, int id) {
+    public void updateSQL(String category, int id) {
         String updateSQL = "Update expenses Set category=? where id=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(updateSQL)) {
             preparedStatement.setString(1, category);
@@ -238,7 +239,8 @@ public class ExpenseTracker extends SQLLogin {
         }
         
     }
-    public void deleteExpenses(int id) {
+    public void deleteSQL(){};
+    public void deleteSQL(int id) {
         String deleteSQL = "Delete  from expenses where id=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
             preparedStatement.setInt(1,id);
@@ -253,7 +255,7 @@ public class ExpenseTracker extends SQLLogin {
         }
         
     }
-    public void deleteExpenses(String startDate, String endDate) {
+    public void deleteSQL(String startDate, String endDate) {
         String deleteSQL = "Delete from expenses WHERE date BETWEEN ? AND ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
             preparedStatement.setString(1, startDate);
@@ -269,7 +271,7 @@ public class ExpenseTracker extends SQLLogin {
         }
         
     }
-    public void deleteExpenses(String category, int id) {
+    public void deleteSQL(String category, int id) {
         String deleteSQL = "Delete  from expenses WHERE category=? AND id=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
             preparedStatement.setString(1, category);
@@ -285,7 +287,7 @@ public class ExpenseTracker extends SQLLogin {
         }
         
     }
-     public void deleteExpenses(String category) {
+     public void deleteSQL(String category) {
         String deleteSQL = "Delete  from expenses WHERE category=?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
             preparedStatement.setString(1, category);
@@ -300,7 +302,7 @@ public class ExpenseTracker extends SQLLogin {
         }
         
     }
-    public void deleteExpenses(boolean confirm) {
+    public void deleteSQL(boolean confirm) {
         if(confirm=true){
         String deleteSQL = "DELETE * FROM table_name;";
         try (PreparedStatement preparedStatement = connection.prepareStatement(deleteSQL)) {
@@ -326,6 +328,5 @@ public class ExpenseTracker extends SQLLogin {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-      
+    } 
 }
