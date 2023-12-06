@@ -9,9 +9,9 @@ class PersonalAssistant extends SQLLogin{
      Scanner sc = new Scanner(System.in);
      int tries=5;
      boolean PARun=true;
-    File fileEX = new File("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Expenses Record.txt");
+    File fileEX = new File("C://Users//vchau//Documents//GitHub//Expense-Personal-Tracker//Expense & Personal Tracker//6.12.23//Output//Expenses Record.txt");
     fileEX.delete();
-    File fileET = new File("C://Users//rking//OneDrive//Desktop//JAVA Project//Personal Assistant Draft 1//Output//Event Record.txt");
+    File fileET = new File("C://Users//vchau//Documents//GitHub//Expense-Personal-Tracker//Expense & Personal Tracker//6.12.23//Output//Events Record.txt");
     fileET.delete();
      while(PARun){
             System.out.println("Welcome to Your Personal Assistant");
