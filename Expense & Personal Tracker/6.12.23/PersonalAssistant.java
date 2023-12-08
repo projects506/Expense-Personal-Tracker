@@ -51,15 +51,13 @@ class PersonalAssistant extends SQLLogin {
 
                                 switch (choice) {
                                     case 1:
-                                    try{
+
                                         System.out.print("Enter category: ");
                                         String category = sc.next();
-                                    }
-                                    catch(IOMissMatchException e)
+
                                         System.out.print("Enter amount: ");
                                         double amount = sc.nextDouble();
                                         ETM.insertSQL(category, amount);
-                                        break;
 
                                     case 2:
 
